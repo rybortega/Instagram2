@@ -1,8 +1,11 @@
 package com.example.parstagram;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -11,11 +14,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.parstagram.fragments.ComposeFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -28,97 +34,39 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText etDescription;
-    ImageView ivPicture;
-    File photoFile;
+    BottomNavigationView bottomNav;
+    final FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etDescription = findViewById(R.id.description);
-        ivPicture = findViewById(R.id.post_picture);
+        bottomNav = findViewById(R.id.bottom_navigation);
 
-        // When we click submit, check that there is a picture attached, then save post
-        (findViewById(R.id.submit_post)).setOnClickListener(new View.OnClickListener() {
+        // When a different Nav item is selected, replace the current frag with an instance
+        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                if (photoFile == null || ivPicture.getDrawable() == null) {
-                    Toast.makeText(MainActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
-                    return;
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Fragment frag;
+                switch(menuItem.getItemId()){
+                    case R.id.home:
+                        frag = new Fragment();
+                        System.out.println("yo");
+                        break;
+                    case R.id.create_post:
+                        frag = new ComposeFragment();
+                        break;
+                    default:
+                        frag = new Fragment();
+                        break;
                 }
-                savePost(etDescription.getText().toString(), ParseUser.getCurrentUser());
+                // Update fragment by replacing
+                fragmentManager.beginTransaction().replace(R.id.frag_container, frag).commit();
+                return true;
             }
         });
-
-        // When we click to get picture, open up camera and store result File into photoFile
-        (findViewById(R.id.take_picture)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                photoFile = getPhotoFileUri("photo.jpg");
-
-                Uri fileProvider = FileProvider.getUriForFile(MainActivity.this, "com.codepath.fileprovider", photoFile);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
-                startActivityForResult(i, 100);
-
-            }
-        });
-    }
-
-    //When we come back from taking a picture, Set the preview as the new picture's BitMap
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                ivPicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.getAbsolutePath()));
-                return;
-            }
-            Toast.makeText(MainActivity.this, "Error taking image", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public File getPhotoFileUri(String s) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "APP_TAG");
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-            Log.d("APP_TAG", "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + s);
-
-        return file;
-    }
-
-    // Create a new Post and push this to MongoDB
-    public void savePost(String description, ParseUser currentUser) {
-        Post post = new Post();
-        post.setDescription(description);
-        post.setUser(currentUser);
-        post.setImage(new ParseFile(photoFile));
-
-        // Save in background for efficiency
-        post.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Toast.makeText(MainActivity.this, "Error saving post", Toast.LENGTH_SHORT).show();
-                }
-                Toast.makeText(MainActivity.this, "Saved post", Toast.LENGTH_SHORT).show();
-
-                //Trash what we just saved
-                etDescription.setText("");
-                ivPicture.setImageResource(0);
-            }
-        });
+        bottomNav.setSelectedItemId(R.id.create_post);
     }
 
     // Retrieve a list of all the posts
