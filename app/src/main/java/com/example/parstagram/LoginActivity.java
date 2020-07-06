@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.entered_username);
         etPassword = findViewById(R.id.entered_password);
 
+        // When button login is clicked, we check if username and password are accurate
         (findViewById(R.id.login_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    // Intents to MainActivity
     private void goToMain() {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
