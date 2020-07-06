@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(ParseUser.getCurrentUser() != null)
+        if (ParseUser.getCurrentUser() != null)
             goToMain();
 
         etUsername = findViewById(R.id.entered_username);
@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
                 ParseUser.logInInBackground(etUsername.getText().toString(), etPassword.getText().toString(), new LogInCallback() {
                     @Override
                     public void done(ParseUser user, ParseException e) {
-                        if(e != null){
+                        if (e != null) {
                             Toast.makeText(LoginActivity.this, "Wrong Username/ Password", Toast.LENGTH_SHORT).show();
                             return;
                         }

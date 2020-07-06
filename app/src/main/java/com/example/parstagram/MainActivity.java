@@ -44,10 +44,41 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.submit_post)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (photoFile == null || ivPicture.getDrawable() == null) {
+                    Toast.makeText(MainActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 savePost(etDescription.getText().toString(), ParseUser.getCurrentUser());
             }
         });
 
+        // When we click to get picture, open up camera and store result File into photoFile
+        (findViewById(R.id.take_picture)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                photoFile = getPhotoFileUri("photo.jpg");
+
+                Uri fileProvider = FileProvider.getUriForFile(MainActivity.this, "com.codepath.fileprovider", photoFile);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+
+                startActivityForResult(i, 100);
+
+            }
+        });
+    }
+
+    //When we come back from taking a picture, Set the preview as the new picture's BitMap
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+                ivPicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.getAbsolutePath()));
+                return;
+            }
+            Toast.makeText(MainActivity.this, "Error taking image", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public File getPhotoFileUri(String s) {
@@ -72,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         Post post = new Post();
         post.setDescription(description);
         post.setUser(currentUser);
+        post.setImage(new ParseFile(photoFile));
 
         // Save in background for efficiency
         post.saveInBackground(new SaveCallback() {
