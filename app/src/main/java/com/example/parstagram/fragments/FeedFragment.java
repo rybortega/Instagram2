@@ -54,7 +54,7 @@ public class FeedFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(view.getContext()));
         queryPosts();
-        
+
         // When we refresh, delete the posts we have now and replace with a more updated set
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
