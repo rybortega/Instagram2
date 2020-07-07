@@ -16,6 +16,7 @@ public class ProfileFragment extends FeedFragment {
     public void queryPosts() {
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
         q.include(Post.KEY_USER);
+        q.setLimit(20);
         q.addDescendingOrder("createdAt");
 
         // User that made the post must be the current User signed in
@@ -26,12 +27,12 @@ public class ProfileFragment extends FeedFragment {
             public void done(List<Post> objects, ParseException e) {
                 if (e != null) {
                     Toast.makeText(getContext(), "Error getting posts", Toast.LENGTH_SHORT).show();
+                    refreshLayout.setRefreshing(false);
                     return;
                 }
-                for (Post p : objects) {
-                    posts.add(p);
-                }
+                posts.addAll(objects);
                 adapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
     }

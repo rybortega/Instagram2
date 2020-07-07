@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class FeedFragment extends Fragment {
     List<Post> posts;
     RecyclerView rvPosts;
     PostAdapter adapter;
+    SwipeRefreshLayout refreshLayout;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -47,28 +49,41 @@ public class FeedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         posts = new ArrayList<>();
         rvPosts = view.findViewById(R.id.rv_posts);
+        refreshLayout = view.findViewById(R.id.swipeContainer);
         adapter = new PostAdapter(view.getContext(), posts);
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(view.getContext()));
         queryPosts();
+        
+        // When we refresh, delete the posts we have now and replace with a more updated set
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                posts.clear();
+                queryPosts();
+            }
+        });
     }
 
     // Retrieve a list of all the posts
     public void queryPosts() {
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
         q.include(Post.KEY_USER);
+        q.setLimit(20);
         q.addDescendingOrder("createdAt");
         q.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {
                 if (e != null) {
                     Toast.makeText(getContext(), "Error getting posts", Toast.LENGTH_SHORT).show();
+
+                    // Reset refreshing progress bar to false
+                    refreshLayout.setRefreshing(false);
                     return;
                 }
-                for (Post p : objects) {
-                    posts.add(p);
-                }
+                posts.addAll(objects);
                 adapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
     }
