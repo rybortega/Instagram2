@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.parstagram.fragments.ComposeFragment;
 import com.example.parstagram.fragments.FeedFragment;
+import com.example.parstagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         frag = new ComposeFragment();
                         break;
                     default:
-                        frag = new Fragment();
+                        frag = new ProfileFragment();
                         break;
                 }
                 // Update fragment by replacing

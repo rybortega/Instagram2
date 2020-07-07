@@ -57,6 +57,7 @@ public class FeedFragment extends Fragment {
     public void queryPosts() {
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
         q.include(Post.KEY_USER);
+        q.addDescendingOrder("createdAt");
         q.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {
