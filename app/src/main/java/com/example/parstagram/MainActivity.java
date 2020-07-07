@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.parstagram.fragments.ComposeFragment;
+import com.example.parstagram.fragments.FeedFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -49,10 +50,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Fragment frag;
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.home:
-                        frag = new Fragment();
-                        System.out.println("yo");
+                        frag = new FeedFragment();
                         break;
                     case R.id.create_post:
                         frag = new ComposeFragment();
@@ -69,21 +69,4 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.create_post);
     }
 
-    // Retrieve a list of all the posts
-    public void queryPosts() {
-        ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
-        q.include(Post.KEY_USER);
-        q.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> objects, ParseException e) {
-                if (e != null) {
-                    Toast.makeText(MainActivity.this, "Error getting posts", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                for (Post p : objects) {
-                    System.out.println(p.getDescription() + " " + p.getUser().getUsername());
-                }
-            }
-        });
-    }
 }
