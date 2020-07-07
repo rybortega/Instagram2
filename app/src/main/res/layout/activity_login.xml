@@ -40,6 +40,14 @@
             android:backgroundTint="#03A9F4"
             android:text="Login"
             android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4CAF50"
+            android:text="Sign Up"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

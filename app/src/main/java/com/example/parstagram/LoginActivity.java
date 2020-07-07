@@ -45,6 +45,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // When user clicks register, we set up their account then go to MainActivity
+        (findViewById(R.id.register_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser new_user = new ParseUser();
+                new_user.setUsername(etUsername.getText().toString());
+                new_user.setPassword(etPassword.getText().toString());
+                try {
+                    new_user.signUp();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                goToMain();
+            }
+        });
+
     }
 
     // Intents to MainActivity
