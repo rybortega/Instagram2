@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.parstagram.MainActivity;
@@ -37,6 +38,7 @@ public class ComposeFragment extends Fragment {
     EditText etDescription;
     ImageView ivPicture;
     File photoFile;
+    ProgressBar pbSavePost;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -54,6 +56,7 @@ public class ComposeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         etDescription = view.findViewById(R.id.description);
         ivPicture = view.findViewById(R.id.post_picture);
+        pbSavePost = view.findViewById(R.id.pbLoading);
 
         // When we click submit, check that there is a picture attached, then save post
         (view.findViewById(R.id.submit_post)).setOnClickListener(new View.OnClickListener() {
@@ -107,6 +110,9 @@ public class ComposeFragment extends Fragment {
         post.setUser(currentUser);
         post.setImage(new ParseFile(photoFile));
 
+        // Show to User that post is being saved
+        pbSavePost.setVisibility(View.VISIBLE);
+
         // Save in background for efficiency
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -114,6 +120,8 @@ public class ComposeFragment extends Fragment {
                 if (e != null) {
                     Toast.makeText(getContext(), "Error saving post", Toast.LENGTH_SHORT).show();
                 }
+                // Show user the post was uploaded
+                pbSavePost.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Saved post", Toast.LENGTH_SHORT).show();
 
                 //Trash what we just saved
