@@ -1,8 +1,7 @@
 package com.example.parstagram;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.content.Intent;;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
-import com.parse.ParseUser;
-
 
 import java.util.List;
 
@@ -56,6 +53,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView username2;
         TextView caption;
         TextView time;
+        LinearLayout headline;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +63,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             this.username2 = itemView.findViewById(R.id.user2);
             this.caption = itemView.findViewById(R.id.caption);
             this.time = itemView.findViewById(R.id.time);
+            this.headline = itemView.findViewById(R.id.headline);
         }
 
         public void bind(final Post post) {
@@ -81,6 +80,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             this.username2.setText("" + post.getUser().getUsername());
             this.caption.setText("" + post.getDescription());
             this.time.setText("" + post.getCreatedAt().toString());
+
+            this.headline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String username = post.getUser().getUsername();
+                    Intent i = new Intent(context, ProfileActivity.class);
+                    i.putExtra("username", username);
+                    ParseFile pic = post.getUser().getParseFile("profilePic");
+                    if(pic != null){
+                        i.putExtra("profilePic", pic.getUrl());
+                    }
+                    context.startActivity(i);
+                }
+            });
 
             // If the description is clicked, go to PostActivity
             // I didn't use Parcel to putExtra the entire Post object
