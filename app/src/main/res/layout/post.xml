@@ -1,104 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/headline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/post_profile_pic"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/georgio" />
-
-        <TextView
-            android:id="@+id/user"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:gravity="center|left"
-            android:text="wilmie"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/post_pic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
-        android:layout_weight="1"
-        app:srcCompat="@drawable/georgio" />
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/post_profile_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/georgio" />
+
+            <TextView
+                android:id="@+id/user"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="center|left"
+                android:text="wilmie"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/like_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ufi_heart" />
+            android:id="@+id/post_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/georgio" />
 
-        <ImageView
-            android:id="@+id/comment_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="7dp"
-            android:src="@drawable/ufi_comment" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/share_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="7dp"
-            android:src="@drawable/direct" />
+            <ImageView
+                android:id="@+id/like_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ufi_heart" />
+
+            <ImageView
+                android:id="@+id/comment_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="7dp"
+                android:src="@drawable/ufi_comment" />
+
+            <ImageView
+                android:id="@+id/share_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="7dp"
+                android:src="@drawable/direct" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/user2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:gravity="center|left"
+                android:text="wilmie"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:fontFamily="sans-serif-condensed-light"
+                android:gravity="center|left"
+                android:text="wilmie"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center|left"
+            android:text="wilmie"
+            android:textSize="13sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/new_comment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#A2CCED"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/user2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:gravity="center|left"
-            android:text="wilmie"
-            android:textSize="18sp" />
+        <EditText
+            android:id="@+id/new_comment"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Write your thoughts..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/caption"
+        <Button
+            android:id="@+id/submit_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:fontFamily="sans-serif-condensed-light"
-            android:gravity="center|left"
-            android:text="wilmie"
-            android:textSize="18sp" />
+            android:backgroundTint="#4CAF50"
+            android:text="Comment"
+            android:textColor="#FFFFFF"
+            android:textColorHighlight="#1E1A1A"
+            android:textColorLink="#4A3E3E" />
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-thin"
-        android:gravity="center|left"
-        android:text="wilmie"
-        android:textSize="13sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvComments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</LinearLayout>
+</RelativeLayout>

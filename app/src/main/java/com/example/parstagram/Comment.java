@@ -25,4 +25,12 @@ public class Comment extends ParseObject {
     public void setCommentText(String s) {
         put("commentText", s);
     }
+
+    public Post getPost() {
+        return (Post) getParseObject("post");
+    }
+
+    public void setPost(Post new_post) {
+        put("post", new_post);
+    }
 }
