@@ -10,6 +10,7 @@ public class ParseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ParseObject.registerSubclass(Post.class);
+        ParseObject.registerSubclass(Comment.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("wilmer-parstagram") // should correspond to APP_ID env variable
                 .clientKey("37DD5A0741")  // set explicitly unless clientKey is explicitly configured on Parse server
