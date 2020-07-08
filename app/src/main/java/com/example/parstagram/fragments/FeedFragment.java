@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.parstagram.MainActivity;
+import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.Post;
 import com.example.parstagram.PostAdapter;
 import com.example.parstagram.R;
@@ -31,6 +31,7 @@ public class FeedFragment extends Fragment {
     RecyclerView rvPosts;
     PostAdapter adapter;
     SwipeRefreshLayout refreshLayout;
+    EndlessRecyclerViewScrollListener scrolling;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -47,29 +48,50 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         posts = new ArrayList<>();
         rvPosts = view.findViewById(R.id.rv_posts);
         refreshLayout = view.findViewById(R.id.swipeContainer);
+
+        // We need to assign the same layout manager to both RecyclerView and EnlessScrollListener, so they are syncronized
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        // As we scroll, get the next page
+        scrolling = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(page);
+            }
+        };
+
+        rvPosts.addOnScrollListener(scrolling);
+
         adapter = new PostAdapter(view.getContext(), posts);
         rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        queryPosts();
+        rvPosts.setLayoutManager(linearLayoutManager);
+
+        queryPosts(0);
 
         // When we refresh, delete the posts we have now and replace with a more updated set
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 posts.clear();
-                queryPosts();
+                queryPosts(0);
             }
         });
     }
 
     // Retrieve a list of all the posts
-    public void queryPosts() {
+    public void queryPosts(int page) {
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
         q.include(Post.KEY_USER);
-        q.setLimit(20);
+
+        // The first Post that we need from page x is x * 5 + 1, so set skip(lower bound) as x * 5
+        // We need 5 so set limit(upper bound) as x * 5 + 5
+        q.setLimit(5 * page + 5);
+        q.setSkip(5 * page);
+
         q.addDescendingOrder("createdAt");
         q.findInBackground(new FindCallback<Post>() {
             @Override

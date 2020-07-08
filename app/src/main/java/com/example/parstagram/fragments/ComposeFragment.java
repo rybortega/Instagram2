@@ -130,6 +130,7 @@ public class ComposeFragment extends Fragment {
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 ivPicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.getAbsolutePath()));
+
                 return;
             }
             Toast.makeText(getContext(), "Error taking image", Toast.LENGTH_SHORT).show();

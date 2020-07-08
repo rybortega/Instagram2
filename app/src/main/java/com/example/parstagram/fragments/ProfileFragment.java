@@ -2,8 +2,6 @@ package com.example.parstagram.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.LoginActivity;
-import com.example.parstagram.MainActivity;
 import com.example.parstagram.Post;
 import com.example.parstagram.PostAdapter;
 import com.example.parstagram.R;
@@ -36,6 +34,7 @@ public class ProfileFragment extends Fragment {
     RecyclerView rvPosts;
     PostAdapter adapter;
     SwipeRefreshLayout refreshLayout;
+    EndlessRecyclerViewScrollListener scrolling;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -57,19 +56,32 @@ public class ProfileFragment extends Fragment {
         rvPosts = view.findViewById(R.id.rv_posts2);
         refreshLayout = view.findViewById(R.id.swipeContainer2);
 
+        // We need to assign the same layout manager to both RecyclerView and EnlessScrollListener, so they are syncronized
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        // When we scroll, get the next page
+        scrolling = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(page);
+            }
+        };
+
+        rvPosts.addOnScrollListener(scrolling);
+
         adapter = new PostAdapter(view.getContext(), posts);
         rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        rvPosts.setLayoutManager(linearLayoutManager);
 
         // Query for posts even before a refresh
-        queryPosts();
+        queryPosts(0);
 
         // When we refresh, delete the posts we have now and replace with a more updated set
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 posts.clear();
-                queryPosts();
+                queryPosts(0);
             }
         });
 
@@ -86,10 +98,14 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    public void queryPosts() {
+    public void queryPosts(int page) {
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
         q.include(Post.KEY_USER);
-        q.setLimit(20);
+
+        // The first Post that we need from page x is x * 5 + 1, so set skip(lower bound) as x * 5
+        // We need 5 so set limit(upper bound) as x * 5 + 5
+        q.setLimit(5 * page + 5);
+        q.setSkip(5 * page);
         q.addDescendingOrder("createdAt");
 
         // User that made the post must be the current User signed in
