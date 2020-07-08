@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 
 import java.util.List;
@@ -47,6 +49,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     // Save this ViewHolder's features and bind when needed
     class ViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView profilePic;
         TextView username;
         ImageView picture;
         TextView username2;
@@ -55,6 +59,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.profilePic = itemView.findViewById(R.id.post_profile_pic);
             this.username = itemView.findViewById(R.id.user);
             this.picture = itemView.findViewById(R.id.post_pic);
             this.username2 = itemView.findViewById(R.id.user2);
@@ -63,6 +68,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
 
         public void bind(final Post post) {
+
+            // If this post's user has a profile picture, load it, else load the deafult
+            ParseFile image = post.getUser().getParseFile("profilePic");
+            if (image != null) {
+                String url = image.getUrl();
+                Glide.with(context).load(url).circleCrop().into(this.profilePic);
+            } else
+                this.profilePic.setImageResource(R.drawable.georgio);
             this.username.setText("" + post.getUser().getUsername());
             Glide.with(context).load(post.getImage().getUrl()).into(this.picture);
             this.username2.setText("" + post.getUser().getUsername());
