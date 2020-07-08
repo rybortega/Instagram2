@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.parse.ParseUser;
+
 import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
@@ -52,7 +54,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             this.tvCommentDate = itemView.findViewById(R.id.comment_date);
         }
         public void bind(Comment comment){
-            this.tvCommenter.setText("" + comment.getUser());
+            this.tvCommenter.setText("" + comment.getUser().getUsername());
             this.tvCommentText.setText("" + comment.getCommentText());
             this.tvCommentDate.setText("" + comment.getCreatedAt().toString());
         }

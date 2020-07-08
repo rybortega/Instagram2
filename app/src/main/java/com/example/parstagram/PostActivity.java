@@ -45,7 +45,7 @@ public class PostActivity extends AppCompatActivity {
 
         // Retrieve the post through a query and set up featured views
         post = getPost(getIntent().getStringExtra("objectId"));
-        username.setText("" + post.getUser());
+        username.setText("" + post.getUser().getUsername());
         Glide.with(this).load(post.getImage().getUrl()).into(picture);
         username2.setText("" + post.getUser());
         caption.setText("" + post.getDescription());
@@ -58,6 +58,7 @@ public class PostActivity extends AppCompatActivity {
     // Get Post knowing the post's objectId
     private Post getPost(String objectId){
         ParseQuery<Post> q = ParseQuery.getQuery(Post.class);
+        q.include("user");
         q.whereEqualTo("objectId", objectId);
         try {
             List<Post> res = q.find();
@@ -72,6 +73,7 @@ public class PostActivity extends AppCompatActivity {
     public void getComments(int page){
         ParseQuery<Comment> q = ParseQuery.getQuery(Comment.class);
         q.include("post");
+        q.include("user");
         q.whereEqualTo("post", post);
 
         q.setLimit(10 * page + 10);
