@@ -16,6 +16,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class PostActivity extends AppCompatActivity {
         TextView username2 = findViewById(R.id.user2);
         TextView caption = findViewById(R.id.caption);
         TextView time = findViewById(R.id.time);
+        final ImageView like = findViewById(R.id.like_button);
+        final TextView numLikes = findViewById(R.id.num_likes);
 
         // Set up the Comments RecyclerView
         comments = new ArrayList<>();
@@ -57,6 +60,13 @@ public class PostActivity extends AppCompatActivity {
         caption.setText("" + post.getDescription());
         time.setText("" + post.getCreatedAt());
 
+        // Find out if this User has liked this post, and set the proper Image representing so
+        final Like[] hasLiked = {hasLiked(post)};
+        if (hasLiked[0] == null)
+            like.setImageResource(R.drawable.ufi_heart);
+        else
+            like.setImageResource(R.drawable.ufi_heart_active);
+
         // Query for comments
         getComments(0);
 
@@ -68,6 +78,67 @@ public class PostActivity extends AppCompatActivity {
                 saveComment(new_comment.getText().toString());
             }
         });
+
+        if (getIntent().hasExtra("comment"))
+            new_comment.requestFocus();
+
+        // Set the correct current number of likes
+        numLikes.setText("" + post.getInt("likes") + " likes");
+
+        // If we hit like, change the post's like count, save it, and update the Parse Server's Like class,
+        // as well as the like count TextView, and Like icon's image resource
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                post.put("likes", hasLiked[0] != null ? post.getInt("likes") - 1 : post.getInt("likes") + 1);
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        numLikes.setText("" + post.getInt("likes") + " likes");
+                        if (hasLiked[0] == null) {
+                            like.setImageResource(R.drawable.ufi_heart_active);
+                            Like newLike = new Like();
+                            newLike.setUser(ParseUser.getCurrentUser());
+                            newLike.setPost(post);
+                            try {
+                                newLike.save();
+                                hasLiked[0] = newLike;
+                            } catch (ParseException ex) {
+                                ex.printStackTrace();
+                                Toast.makeText(PostActivity.this, "Error saving like", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            like.setImageResource(R.drawable.ufi_heart);
+                            try {
+                                hasLiked[0].delete();
+                                hasLiked[0] = null;
+                            } catch (ParseException ex) {
+                                ex.printStackTrace();
+                                Toast.makeText(PostActivity.this, "Error removing like", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    // Query the Like table to see if this user has liked this post, if so return this Like object
+    // so that we may potentially delete it
+    private Like hasLiked(Post post) {
+        ParseQuery<Like> q = ParseQuery.getQuery(Like.class);
+        q.whereEqualTo("post", post);
+        q.whereEqualTo("user", ParseUser.getCurrentUser());
+        try {
+            List<Like> res = q.find();
+            if (res.isEmpty())
+                return null;
+            return res.get(0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Create a new Comment Object and save it
