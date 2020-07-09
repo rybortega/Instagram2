@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.parse.ParseUser;
+import com.example.parstagram.models.Comment;
+import com.example.parstagram.R;
 
 import java.util.List;
 

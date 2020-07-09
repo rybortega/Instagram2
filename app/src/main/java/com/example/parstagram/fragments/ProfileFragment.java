@@ -1,7 +1,6 @@
 package com.example.parstagram.fragments;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.example.parstagram.EndlessRecyclerViewScrollListener;
-import com.example.parstagram.LoginActivity;
-import com.example.parstagram.Post;
-import com.example.parstagram.PostAdapter;
+import com.example.parstagram.utils.EndlessRecyclerViewScrollListener;
+import com.example.parstagram.activities.LoginActivity;
+import com.example.parstagram.models.Post;
+import com.example.parstagram.adapters.PostAdapter;
 import com.example.parstagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;

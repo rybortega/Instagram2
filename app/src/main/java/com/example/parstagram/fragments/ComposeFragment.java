@@ -21,8 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.parstagram.MainActivity;
-import com.example.parstagram.Post;
+import com.example.parstagram.models.Post;
 import com.example.parstagram.R;
 import com.parse.ParseException;
 import com.parse.ParseFile;

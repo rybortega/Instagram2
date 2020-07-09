@@ -1,7 +1,10 @@
-package com.example.parstagram;
+package com.example.parstagram.network;
 
 import android.app.Application;
 
+import com.example.parstagram.models.Comment;
+import com.example.parstagram.models.Like;
+import com.example.parstagram.models.Post;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
