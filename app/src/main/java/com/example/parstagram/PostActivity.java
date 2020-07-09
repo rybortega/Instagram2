@@ -34,6 +34,7 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.post);
 
         (findViewById(R.id.new_comment_container)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.comment_section)).setVisibility(View.VISIBLE);
 
         TextView username = findViewById(R.id.user);
         ImageView picture = findViewById(R.id.post_pic);
@@ -52,7 +53,7 @@ public class PostActivity extends AppCompatActivity {
         post = getPost(getIntent().getStringExtra("objectId"));
         username.setText("" + post.getUser().getUsername());
         Glide.with(this).load(post.getImage().getUrl()).into(picture);
-        username2.setText("" + post.getUser());
+        username2.setText("" + post.getUser().getUsername());
         caption.setText("" + post.getDescription());
         time.setText("" + post.getCreatedAt());
 

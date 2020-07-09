@@ -37,7 +37,7 @@
         <ImageView
             android:id="@+id/post_pic"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             android:layout_marginBottom="7dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/georgio" />
@@ -100,10 +100,16 @@
             android:text="wilmie"
             android:textSize="13sp" />
 
+        <ScrollView
+            android:id="@+id/comment_section"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:visibility="gone">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvComments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        </ScrollView>
 
     </LinearLayout>
 

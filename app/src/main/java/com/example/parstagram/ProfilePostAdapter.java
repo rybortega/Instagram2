@@ -55,10 +55,7 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(context, PostActivity.class);
-                    i.putExtra("username", post.getUser().getUsername());
-                    i.putExtra("image", post.getImage().getUrl());
-                    i.putExtra("description", post.getDescription());
-                    i.putExtra("time", post.getCreatedAt().toString());
+                    i.putExtra("objectId", post.getObjectId());
                     context.startActivity(i);
                 }
             });
